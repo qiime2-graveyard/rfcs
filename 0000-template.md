@@ -13,8 +13,8 @@ Authors:
   - "@<github-username>"
   - ...
 Contributors:
-  - "@<github-username>"
-  - "@<github-username>"
+  - "<leave empty>"
+  - "<leave empty>"
   - ...
 ---
 
@@ -33,8 +33,8 @@ outcome?
 
 # Impact
 
-How will the changes in this RFC affect the following audiences: users, plugin
-developers, and interface/platform developers.
+How will the changes in this RFC affect users, plugin developers, and
+interface/platform developers?
 
 # Detailed design
 
