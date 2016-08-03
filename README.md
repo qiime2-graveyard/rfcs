@@ -53,7 +53,9 @@ Here are the steps to get started with an RFC:
   be explicitly stated in the *Unresolved Questions* section of the proposal.
 - Submit a pull request to this repository. This will alert the QIIME 2 team
   that your proposal is ready to begin the review process. Please include
-  a link to the rendered markdown in your pull request comment.
+  a link to the rendered markdown in your pull request comment. Format your
+  pull request title as follows: "RFC: new feature", where "new feature" is
+  the title of your proposal.
 
 ## RFC Lifecycle
 
@@ -79,10 +81,12 @@ The RFC lifecycle is expressed and tracked via pull request tags:
   a deadline for final feedback. This is the last opportunity to give input on
   the proposal. Speak now or forever hold your peace.
 - `accepted`: Once accepted, the guide will merge the pull request through the
-  GitHub interface using the squash and merge option. The guide will then
-  update the RFC front matter (pull request number and contributers) and the
-  file name number, which should be incremented from the last accepted RFC's
-  number.
+  GitHub interface using the squash and merge option. The guide is also
+  responsible for formatting the commit message, which should be formatted as
+  follows: "RFC: new feature", where "new feature" is the title of your
+  proposal. The guide will then update the RFC front matter (pull request
+  number and contributers) and the file name number, which should be
+  incremented from the last accepted RFC's number.
 
 Unfortunately, not everything goes according to plan - the following
 contingencies are in place for accommodating these realities.
