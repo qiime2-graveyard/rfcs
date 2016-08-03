@@ -89,7 +89,7 @@ contingencies are in place for accommodating these realities.
 
 - `on-hold`: There is nothing wrong with this RFC, but further discussion
   should wait until some externality is resolved (e.g. waiting on another RFC).
-- `rejected`: The RFC has been rejected, and will include an subtype tag to
+- `rejected`: The RFC has been rejected, and will include a subtype tag to
   indicate the reasoning:
   - `create-new-rfc`: If the discussion results in significant modifications to
     the RFC, the authors will be asked to close the pull request and issue a
