@@ -47,10 +47,11 @@ Here are the steps to get started with an RFC:
 - Fill in the RFC template. This is easier said than done: please ensure that
   you have completed all sections and included all relevant considerations and
   viewpoints. **A standard of quality is expected and if it does not meet that
-  we are under no obligation to consider it**. This means that RFCs should
-  present convincing arguments and fully explore the ramifications of the design
-  including drawbacks and alternatives. If these are not yet known they should
-  be explicitly stated in the *Unresolved Questions* section of the proposal.
+  we are under no obligation to consider your RFC**. This means that RFCs
+  should present convincing arguments and fully explore the ramifications of
+  the design including drawbacks and alternatives. If these are not yet known
+  they should be explicitly stated in the *Unresolved Questions* section of the
+  proposal.
 - Submit a pull request to this repository. This will alert the QIIME 2 team
   that your proposal is ready to begin the review process. Please include
   a link to the rendered markdown in your pull request comment. Format your
@@ -64,19 +65,21 @@ The RFC lifecycle is expressed and tracked via pull request tags:
 - `needs-guide`: Once an RFC is submitted as a pull request a QIIME team
   [member] will be assigned as an RFC guide. They will be the primary contact
   for questions and assistance, and are responsible for advancing the RFC
-  through the review process. If no one is assigned after a while come find us
+  through the review process. If no one is assigned after a week come find us
   on [Slack].
 - `preparing-for-review`: This is an initial screening performed by the guide
   to ensure that the RFC meets the guidelines for review (detailed in *How*,
   above). The guide might request minor adjustments to comply with the RFC
   guidelines and will determine if the RFC subject matter is appropriate to
   begin review.
-- `under-review`: Congratulations! Now is when the real work begins. Review is
-  an iterative process, and will likely generate feedback. Be prepared to
-  address this feedback in your RFC. Feedback may be given from any interested
-  party. The guide will collate relevant feedback and request updates to the
-  RFC. Do not alter the branch history during these updates, it is critical to
-  reviewers that GitHub comments remain in place during review.
+- `under-review`: Congratulations! Now is when the real work begins. The QIIME
+  team will announce the review process through broadcasts on [Twitter],
+  [Slack], and the [blog]. Review is an iterative process, and will likely
+  generate feedback. Be prepared to address this feedback in your RFC. Feedback
+  may be given from any interested party. The guide will collate relevant
+  feedback and request updates to the RFC. Do not alter the branch history
+  during these updates, it is critical to reviewers that GitHub comments remain
+  in place during review.
 - `final-comments`: The RFC is ready to be accepted and the guide has indicated
   a deadline for final feedback. This is the last opportunity to give input on
   the proposal. Speak now or forever hold your peace.
@@ -117,6 +120,8 @@ The RFC process is utilized in many major development efforts. This document
 
 [template]: https://github.com/qiime2/rfcs/blob/master/0000-template.md
 [member]: https://github.com/orgs/qiime2/people
+[Twitter]: https://twitter.com/qiime_
+[blog]: https://qiime.wordpress.com
 [Slack]: http://qiime2-slackin.qiime.org
 [Rust]: https://github.com/rust-lang/rfcs
 [Ember]: https://github.com/emberjs/rfcs
