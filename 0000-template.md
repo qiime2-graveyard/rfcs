@@ -40,7 +40,14 @@ interface/platform developers?
 
 This is the bulk of the RFC. Explain the design in enough detail for somebody
 familiar with QIIME 2 to implement. You should expect to include concrete
-examples of how the feature is used.
+examples of how the feature is used. Prototyping your ideas before writing this
+section is highly encouraged, and can serve as a useful discussion aid during
+review. This can be done in a new GitHub repository, in a branch of a fork of
+the relevant QIIME 2 repository, or anywhere else that is appropriate for the
+RFC. QIIME 2 was built following a [series](https://github.com/biocore/metoo)
+of [prototypes](https://github.com/caporaso-lab/q2d2) which were hugely
+beneficial to the initial design, and we expect you will benefit from the
+process, too.
 
 # How We Teach This
 
