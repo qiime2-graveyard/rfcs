@@ -25,11 +25,13 @@ provenance from initial import to a particular artifact. By using a directory
 it is possible to store all provenance (including intermediate artifacts) and
 associated metadata as concrete files. In particular this RFC describes a way
 of creating a DAG representation without the use of soft/hard links which is
-necessary create a zip file in a cross-platform way.
+necessary create zip files in a cross-platform way.
 
 
 # Glossary
 
+- reproducibility: the ability to mimic a process
+- replicability: the ability to exactly duplicate a process
 - import: to construct an artifact from data external to the QIIME 2 framework
 - provenance: the lineage of an artifact, e.g. identifying the steps taken and
   any intermediate artifacts, from first import to a particular artifact.
@@ -45,13 +47,22 @@ imported artifact, one would need to retain all artifacts generated along the
 way. This not only may be a large amount of data, but it limits the ability of
 meta-analysis as any meta-analysis framework would need to either retain all
 intermediate artifacts, or consider the artifacts of a given study to be
-"imported", defeating the purpose of provenance.
+"imported", essentially acting as if there were no provenance.
 
 If provenance instead retained **all** information about an artifact's lineage,
 then a single `.qza` or `.qzv` file would be capable of reconstructing its own
 pipeline. Furthermore this means that any derived artifacts could retain
 accurate provenance by appending their own provenance to a copy of their
-parent's. This has powerful implications for scientific reproducibility.
+parent's.
+
+Additionally, it is important to be able to distinguish potentially flawed
+artifacts after creation. For example if there was a bug in one of the steps
+that led to a given artifact, then that artifact and any descendants should be
+recomputed. This implies we need an ability to track both the precise steps
+used (including versions) and a way to track the *general* process taken. If
+this was possible, then we can imagine a way to *reproduce* any artifact
+automatically with the currently installed versions of software.
+
 
 # Impact
 The following groups are effected differently by the proposed changes:
@@ -59,8 +70,8 @@ The following groups are effected differently by the proposed changes:
 #### QIIME 2 users
 
 Existing artifacts will not be compatible with artifacts generated with the new
-provenance machinery. It may be possible to construct a new-style provenance
-from a collections of old-style provenance artifacts, however supporting this
+provenance machinery. It may be possible to construct the provenance proposed
+from a collections of current artifacts' provenance, however supporting this
 is not a priority given the instability of the archive format in general.
 
 Additionally users of the "Artifact API" will observe a different `Provenance`
@@ -152,11 +163,16 @@ provenance/
 
 #### provenance/
 A directory dedicated to recording the provenance of the artifact
-(as shown in the above filesystem tree).
+(as shown in the above filesystem tree). This would exist at the root level of
+a `.qza`/`.qzv` archive.
 
 #### action.yml
-A YAML file which indicates exactly what was run, as an example:
+A YAML file which indicates what was run. This file is in principle concerned
+only with *reproducibility*. In other words, runtime and other ephemeral
+characteristics are not considered, only the intended action.
+
 ```yaml
+type: method  # or "visualizer" (identical) or "import" (handled in next sect.)
 plugin: q2-example-plugin
 version: 2!2017.09.0+2.g1076c97
 action: some_action
@@ -198,8 +214,44 @@ times), then only the structure of the provenance (`action.yml`) is
 interesting. If the definition depends on siblings being members of the same
 execution event, then `execution.yml` (defined below) is more appropriate.
 
+##### Handling Import
+
+Importing represents the base-case of our provenance. QIIME 2 must rely on the
+user to accurately describe what the data they have is. In an ideal world these
+are limited to raw sequence reads, but in practice an artifact of *any* type
+may be imported from arbitrary data.
+
+When an artifact is imported for the first time, it isn't the result of an
+*action* (as defined by the framework), but instead of a compilation of
+transformers. Given some source data, they convert it to an artifact. In
+principle it shouldn't matter which transformers were invoked, only the source
+data.
+
+```yaml
+type: import
+format: SomeKindOfFormat  # This is a stronger statement than just the manifest
+manifest:
+    - name: somefile.txt
+      md5sum: 5273810cbc42c66bffd88cc442ef6519
+    - name: relative/otherfile.txt
+      md5sum: 95eeb5826aebb1aab33c0579787ae13e
+```
+
+By storing the md5sums of an import it becomes possible to demonstrate that a
+given file is a member of the provenance for all derived artifacts. This only
+verifies the identity of a file. To understand how it was used, the name of a
+file should be considered in the context of the format. This means that if a
+file changes name over time, we can still understand the context in which it
+was used, independent of its current name.
+
+The name is unnecessary for single file imports, how do we want to handle this?
+There is potential to leak system information here as the name of the file
+is not constrained by a directory format.
+
 #### execution.yml
-A YAML file which describes the execution context:
+A YAML file which describes the execution context. This file is in principle
+concerned with *replicability*. In other words, the exact runtime configuration
+is relevant.
 
 ```yaml
 # A UUID which represents an execution event, nothing more
@@ -210,15 +262,39 @@ runtime:
     end: <timestamp (seconds)>
 # Is it necessary to identify hosts? Different hosts may have different
 # (hopefully compatible) versions.
+transformers:
+    # A singular `input` (matching `output`) is used in the case of import.
+    inputs:
+        input_a:
+            - plugin: q2-some-plugin
+              version: 2!2017.09.0
+              from: ArtifactDirectoryFormat
+              to: SomeIntermediateView
+            - plugin: q2-other-plugin
+              version: 2!2017.09.0
+              from: SomeIntermediateView
+              to: SomeOtherView
+        input_b:
+            - plugin: q2-other-plugin
+              version: 2!2017.09.0
+              from: AnotherDirectoryFormat
+              to: AnotherView
+    output:
+        - plugin: q2-some-plugin
+          version: 2!2017.09.0
+          from: SomeView
+          to: ArtifactDirectoryFormat
+
 versions:
-    python: 3.5.1
-    qiime: 2!2017.09.0
-    # <dump contents of pip freeze>
+  python: 3.5.1
+  qiime: 2!2017.09.0
+  # <dump contents of pip freeze>
+
 ```
 
 The precise contents of this file are less clear, but the goal is to describe
-information that should not be necessary to reproduce an analysis. That being
-said if there was a bug in one of the dependencies then the `versions` is
+information that **should not** be necessary to reproduce an analysis. That
+being said if there was a bug in one of the dependencies then the `versions` is
 necessary to distinguish flawed artifacts after the fact. These versions serve
 a different purpose than the plugin version in `action.yml`, which is used to
 pinpoint a particular method which was invoked, in other words, the API
@@ -232,6 +308,9 @@ directory. As of the time of this writing, that looks like:
 uuid: 0e61e6af-d49e-4aac-8173-23634f3b4c91
 type: Some[SemanticType]
 format: SomeDirectoryFormat
+# Should there be a version here to indicate the version of archive being
+# used? It may be possible to invoke different handlers for each node depending
+# on version.
 ```
 
 Provenance is omitted.
@@ -250,6 +329,7 @@ id3, baz
 
 What should the index be called? There are cases where there will be:
 no columns, one column, many columns; but an index is always assumed to exist.
+The current example does not use a name for the index.
 
 #### artifacts/
 A directory containing ancestral artifacts which are themselves directories
