@@ -177,6 +177,7 @@ directory. As of the time of this writing, that looks like:
 uuid: 0e61e6af-d49e-4aac-8173-23634f3b4c91
 type: Some[SemanticType]
 format: SomeDirectoryFormat
+bytes: 270336
 ```
 
 
@@ -197,8 +198,10 @@ execution:
     uuid: 93062a51-bab2-4e27-9d8b-b86029450db0
     runtime:
         # ISO 8601 in UTC
-        start: '2016-09-13T15:18:34.567747'
-        end: '2016-09-13T15:18:37.615627'
+        start: '2016-09-13T14:26:13.817956-07:00'
+        end: '2016-09-14T16:10:02.000033-07:00'
+        # Human readable duration, computers should just stick the start/end
+        duration: 1 day, 1 hour, 43 minutes, 48 seconds, and 182077 microseconds
 
 action:
     # Described in the next section
@@ -216,18 +219,18 @@ action:
 transformers:  # omitted if there are no transformers (action.type is annotate)
     inputs:  # omitted if there are no inputs (action.type is import)
       input_a:
-          - plugin: q2-some-plugin
+          - plugin: !ref environment:plugins:q2-some-plugin
             from: ArtifactDirectoryFormat
             to: SomeIntermediateView
-          - plugin: q2-other-plugin
+          - plugin: !ref environment:plugins:q2-other-plugin
             from: SomeIntermediateView
             to: SomeOtherView
       input_b:
-          - plugin: q2-other-plugin
+          - plugin: !ref environment:plugins:q2-other-plugin
             from: AnotherDirectoryFormat
             to: AnotherView
     output:
-      - plugin: q2-some-plugin
+      - plugin: !ref environment:plugins:q2-some-plugin
         from: SomeView
         to: ArtifactDirectoryFormat
 
@@ -287,10 +290,11 @@ known.
 installation. This includes the Python version, framework version, plugins, and
 pip dependencies.
 
-`plugin` is used in several places and is a key to the plugins listed by
+`plugin` is used in several places and is an alias to the plugins listed by
 `environment.plugins`. In the future it may be the case that a single action
 invokes multiple environments in which case distinguishing between plugins may
-require more than its plugin-ID.
+require more than its plugin-ID. Appending `-{0-n}` to the alias is likely
+sufficient in that case.
 
 `citations` is used in several places and represent a list of objects which
 are each independent citations. A citation object might look like this:
@@ -341,7 +345,7 @@ In the case of a single-file import, the name is treated the same
 ##### type: method/visualizer
 ```yaml
 type: method  # or "visualizer"
-plugin: q2-example-plugin
+plugin: !ref environment:plugins:q2-example-plugin
 action: some_action
 citations:
     - text: free text here
@@ -397,13 +401,13 @@ directory may be empty, but it must be present.
 
 **example.csv**
 ```csv
-,column
-id1, foo
-id2, bar
-id3, baz
+index,some column
+id1,foo
+id2,bar
+id3,baz
 ```
 
-An index must always exist, but it is not named.
+An index named `index` must always exist.
 
 
 #### artifacts/
@@ -497,6 +501,9 @@ provenance would only exacerbate this problem.
 
 Using XML instead of YAML was discussed, but was considered too complex to
 implement in a readable way. It would however make cross-referencing explicit.
+
+YAML aliases/anchors were considered instead of using a `!ref` tag, but it
+inverted the logical relationships by arranging the information by dependence.
 
 It may be possible to store artifacts as edges in the provenance, but it isn't
 clear how terminal node would be handled in that case.
