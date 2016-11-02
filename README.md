@@ -120,7 +120,7 @@ The RFC process is utilized in many major development efforts. This document
 
 [template]: https://github.com/qiime2/rfcs/blob/master/0000-template.md
 [member]: https://github.com/orgs/qiime2/people
-[Twitter]: https://twitter.com/qiime_
+[Twitter]: https://twitter.com/qiime2
 [blog]: https://qiime.wordpress.com
 [Slack]: http://qiime2-slackin.qiime.org
 [Rust]: https://github.com/rust-lang/rfcs
