@@ -142,6 +142,16 @@ warning saying that the user's configuration was invalid and has been rewritten
 using their correctly provided values, and any invalid settings to be set to the
 defaults.
 
+The configuration directory would look similar to the following:
+
+```bash
+├── QIIME 2
+│   ├── 2.0.x
+│   │   └── config.ini
+│   ├── 2.0.y
+│   │   └── config.ini
+```
+
 A barebones example of the configuration system, using the mentioned techniques,
 would go as follows:
 
