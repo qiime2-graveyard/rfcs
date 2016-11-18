@@ -120,7 +120,7 @@ pre-defined function to create the necessary directories and files on the users
 machine. Failing the ability to hook into `setuptools` will require adding an
 additional step to initialize the config directory.
 
-A layout of the directory structure should use the generally agreed upon method
+A configuration directory's location should use the generally agreed upon method
 of storing the data in the user's Application support directory. In order to
 not have to worry about manually figuring this location out based on user OS,
 the configuration system will use the `get_app_dir` method provided by the
