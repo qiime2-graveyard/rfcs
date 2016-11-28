@@ -120,6 +120,12 @@ pre-defined function to create the necessary directories and files on the users
 machine. Failing the ability to hook into `setuptools` will require adding an
 additional step to initialize the config directory.
 
+There will be an order of precedence on configuration files, where server admins
+may have a global configuration at `/etc/qiime2/` that supplies cluster or
+system specific rules. The QIIME 2 configuration will be set using the following
+precedence: Environment Variables will override local `click.get_app_dir()`
+configurations, which will override global `/etc/qiime2` configuration settings.
+
 A configuration directory's location should use the generally agreed upon method
 of storing the data in the user's Application support directory. In order to
 not have to worry about manually figuring this location out based on user OS,
